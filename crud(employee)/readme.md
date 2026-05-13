@@ -30,8 +30,8 @@ A simple REST API built with **FastAPI** and **SQLAlchemy** for managing employe
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
-   cd <project-folder>
+   git clone https://github.com/upendra-uddagiri/fastapi-projects/crud(employee).git
+   cd crud(employee)
    ```
 
 2. **Create and activate a virtual environment**
