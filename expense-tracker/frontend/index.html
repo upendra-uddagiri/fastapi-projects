@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finance Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="logo">Expense Tracker<span>.</span></div>
+  <div class="header-actions">
+    <button class="btn btn-accent" onclick="openModal()">+ Add Transaction</button>
+  </div>
+</header>
+
+<!-- ── APP SHELL ── -->
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <span class="nav-label">Navigation</span>
+    <button class="nav-btn active" data-page="dashboard" onclick="switchPage('dashboard', this)">
+      <span class="icon">◈</span> Dashboard
+    </button>
+    <button class="nav-btn" data-page="transactions" onclick="switchPage('transactions', this)">
+      <span class="icon">≡</span> Transactions
+    </button>
+    <button class="nav-btn" data-page="summary" onclick="switchPage('summary', this)">
+      <span class="icon">◎</span> Summary
+    </button>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">Your financial overview at a glance.</div>
+
+      <div class="stat-grid">
+        <div class="stat-card income">
+          <div class="stat-label">Total Income</div>
+          <div class="stat-value" id="dash-income">—</div>
+        </div>
+        <div class="stat-card expense">
+          <div class="stat-label">Total Expenses</div>
+          <div class="stat-value" id="dash-expense">—</div>
+        </div>
+        <div class="stat-card balance">
+          <div class="stat-label">Balance</div>
+          <div class="stat-value" id="dash-balance">—</div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-title">Expenses by Category</div>
+        <div class="bar-chart" id="dash-cat-chart">
+          <div class="chart-placeholder">Loading...</div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-title">Recent Transactions</div>
+        <div class="table-wrap" style="border:none">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th><th>Category</th><th>Type</th><th>Amount</th><th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="dash-recent-body">
+              <tr class="loading-row"><td colspan="5"><div class="spinner"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANSACTIONS PAGE -->
+    <div class="page" id="page-transactions">
+      <div class="page-title">Transactions</div>
+      <div class="page-sub">Manage all your income and expense records.</div>
+
+      <div class="filter-bar">
+        <input type="text" id="filter-category" placeholder="Filter by category…" oninput="loadTransactions()"/>
+        <select id="filter-type" onchange="loadTransactions()">
+          <option value="">All Types</option>
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+        <select id="filter-sort" onchange="loadTransactions()">
+          <option value="">Default Sort</option>
+          <option value="date">Sort by Date</option>
+          <option value="amount">Sort by Amount</option>
+        </select>
+        <button class="btn btn-ghost" onclick="clearFilters()">Clear</button>
+        <button class="btn btn-accent" style="margin-left:auto" onclick="openModal()">+ Add</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th><th>Category</th><th>Type</th><th>Amount</th>
+              <th>Date</th><th>Description</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="transactions-body">
+            <tr class="loading-row"><td colspan="7"><div class="spinner"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SUMMARY PAGE -->
+    <div class="page" id="page-summary">
+      <div class="page-title">Summary</div>
+      <div class="page-sub">Income vs expenses breakdown.</div>
+
+      <div class="month-picker">
+        <label>Filter by month:</label>
+        <select id="summary-month" onchange="loadSummary()">
+          <option value="">All Time</option>
+          <option value="1">January</option>
+          <option value="2">February</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card income">
+          <div class="stat-label">Income</div>
+          <div class="stat-value" id="sum-income">—</div>
+        </div>
+        <div class="stat-card expense">
+          <div class="stat-label">Expenses</div>
+          <div class="stat-value" id="sum-expense">—</div>
+        </div>
+        <div class="stat-card balance">
+          <div class="stat-label">Balance</div>
+          <div class="stat-value" id="sum-balance">—</div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-title">Expense Breakdown by Category</div>
+        <div class="bar-chart" id="sum-cat-chart">
+          <div class="chart-placeholder">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── ADD / EDIT MODAL ── -->
+<div class="overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <button class="close-modal" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modal-title">New Transaction</div>
+    <div class="form-grid">
+      <div class="field full">
+        <label>Title</label>
+        <input type="text" id="f-title" placeholder="e.g. Grocery run"/>
+      </div>
+      <div class="field">
+        <label>Amount (₹)</label>
+        <input type="number" id="f-amount" placeholder="0.00" min="0" step="0.01"/>
+      </div>
+      <div class="field">
+        <label>Type</label>
+        <select id="f-type">
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Category</label>
+        <input type="text" id="f-category" placeholder="e.g. Food, Salary…"/>
+      </div>
+      <div class="field">
+        <label>Date</label>
+        <input type="datetime-local" id="f-date"/>
+      </div>
+      <div class="field full">
+        <label>Description (optional)</label>
+        <textarea id="f-description" placeholder="Any notes…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-accent" id="modal-submit-btn" onclick="submitTransaction()">Save Transaction</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
