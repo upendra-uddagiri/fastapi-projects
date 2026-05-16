@@ -91,7 +91,7 @@ live-server --port=5500
 Then visit `http://127.0.0.1:5500`.
 
 ---
-![Home Page](screenshots/homepage.png)
+![Home Page](screen shots/homepage.png)
 ## API Reference
 
 Base URL: `http://127.0.0.1:8000`
@@ -108,6 +108,7 @@ Base URL: `http://127.0.0.1:8000`
 | GET    | `/transactions/summary`           | Get income/expense/balance totals  |
 | GET    | `/transactions/category-summary`  | Get expense totals per category    |
 
+![api docs](screen shots/api_docs.png)
 ### Query Parameters for `GET /transactions`
 
 | Parameter  | Type   | Description                        |
