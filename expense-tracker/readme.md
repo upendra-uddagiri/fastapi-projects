@@ -91,7 +91,7 @@ live-server --port=5500
 Then visit `http://127.0.0.1:5500`.
 
 ---
-![Home Page](screenshots/home.png)
+![Home Page](screenshots/homepage.png)
 ## API Reference
 
 Base URL: `http://127.0.0.1:8000`
